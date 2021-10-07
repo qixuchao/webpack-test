@@ -15,8 +15,53 @@ type 是interface的别名
         get = 'get'
     }
 ```
+#### 常用api
+1. keyof T 返回该类型上所有公共属性名的联合
+```typescript
+  const obj = { a: '1',b: 2 };
+  type Foo = typeof obj; // { a: string, b: number }
+  type B = keyof obj; // 'a' | 'b'
+```
+2. extends 接口继承，可以多继承，子接口就拥有了父接口的属性   
+** 注意事项  
+   如果多继承中父接口中存在类型不同但是属性名相同时，不会像其他语言那样进行合并，而是直接提示错误
+```typescript
+  interface Shape {
+    color: string;
+  }
+  interface PenStroke {
+    penWidth: number;
+  }
+  interface Square extends Shape, PenStroke {
+    sideLength: number;
+  }
+```
+3. infer 只能出现在extends子语句中，用来推断类型变量
+```typescript
+  // ReturnType 为内置工具类型，作用：由函数类型 T 的返回值类型构造一个类型。
+  // 通过infer U 来标记函数的返回值的类型，如果有返回则返回类型，否则返回any
+  type ReturnType<T> = T extends (...args: any[]) => infer R ? R : any;
+```
++ infer 解包,获取数组中元素的类型
+
+in
+&
+|
+?
+-?
++?
+never
+unkown
+any
+readonly
+void
+
+
 #### 重载
 在进行赋值时，可以将参数参数少的赋值给参数多的，反之就不行。
+示例: 约束一个函数的两个参数a,b都支持string和
+
+
 
 
 1、Partial
@@ -65,12 +110,6 @@ export type PowerPartial<T> = {
 ? PowerPartial<T[U]>
 : T[U]
 };
-2、keyof
-返回类型包含key值
-
-const obj = { a: '1',b: 2 };
-type Foo = typeof obj; // { a: string, b: number }
-keyof obj // 'a' | 'b'
 
 
 3、Pick

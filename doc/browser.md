@@ -105,6 +105,22 @@
     + 渲染页面，将渲染树生成的呈现树呈现到屏幕上
 5. 断开连接：TCP四次分手
 
+### 浏览器安全
+1. xss
+2. csrf
+3. csp(内容安全策略，可以禁止加载外域的代码，禁止外域的提交)
+4. https
+5. HSTS(强制客户端使用https与服务端建立链接)
+6. X-Frame-Options(控制当前页面是否可以被嵌入到iframe中) 
+7. SRI(子资源的完整性)
+8. Referer-policy
+
+### node安全
+1. 本地文件操作相关，路径拼接导致的文件泄漏
+2. ReDos
+3. 时序攻击
+4. ip origin referrer request header
+
 
 
 

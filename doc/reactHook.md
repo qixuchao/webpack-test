@@ -6,15 +6,19 @@ mounted阶段
 等到commit阶段，dom树构建完成，在执行每个 effect 副作用钩子。
 
 ### useEffect各个参数的作用
-1. useEffect每次state更新组建都会去渲染
+1. useEffect每次state更新组建都会去执行，但是回调函数只是在初始化和依赖项更新时执行，useEffect是在dom渲染完成之后再去执行。
 2. 方法的第二个参数是一个数组,数组的元素是callback的依赖项，会对数组中的元素进行比较，如果有更新就会执行callback中的逻辑；一般最多支持三个元素
 如果依赖元素比较多可进行合并，或者拆分多个useEffect; 如果数组为空，则只会执行一次； 如果元素是一个方法名，需要用useCallback包裹一下
+3. 主要的一个作用就是处理副作用函数(副作用是任何会影响正在执行的函数范围之外的内容的东西)  
+   API请求，网络套接字，计时器，记录器，甚至是引用中的任何内容
+    
 
 ### useCallback
 缓存函数的引用，不会在状态更新重新渲染的时候重新声明一个新的函数引用
 
 ### useRef
 因为useRef返回缓存下来的值，无论执行多少次都可以拿到最新的值，hook.memoizedState指向了一个对象。
+组件之间传递ref属性时不要使用ref属性名，它是react中的关键字，需要时可以使用forwardRef
 ```javascript
 import { useRef } from 'react'
 const Test = () => {

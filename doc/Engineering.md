@@ -23,7 +23,10 @@
 5. 组件化开发
 6. 开发环境的本地服务器与mock服务
 7. 规范化约束
+   + prettier https://mp.weixin.qq.com/s/EJ98wba1ty2TnZ2SpwzXVg 
 8. 项目部署流程
+9. 额外的配置
+    + sentry(错误收集)
 
 ## 前端优化的方式
 资源按需加载, 压缩图片，图片预加载，图片懒加载，codeSpilt

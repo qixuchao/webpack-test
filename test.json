@@ -1,0 +1,24 @@
+{
+  "status": "OK",
+  "code": "10000",
+  "message": "成功响应",
+  "data": {
+    "idcardOcrRespVO": {
+      "name": "戚先生",
+      "sex": "男",
+      "nation": "汉",
+      "birthday": "1992-03-12",
+      "address": "西安市灞桥区灞耿路1369号",
+      "identityCode": "610327199203123619",
+      "profilePhoto": null,
+      "signAgent": "陇县公安局",
+      "validPeriodBegin": "2010-06-08",
+      "validPeriodEnd": "2020-06-08",
+      "side": "1"
+    },
+    "bankcardOcrRespVO": null
+  },
+  "date": 1632883079768,
+  "success": true,
+  "ok": true
+}

@@ -86,11 +86,42 @@ window.onload: 需要页面的资源都加载完，包括图片，只会执行�
 object: 通过键值对的形式存贮数据，key只能是string或者Symbol，有一个额外的原型属性，key的顺序时无序的  
 map: key可以是任意值，是有顺序的按照插入的顺序返回.通过size获取属性个数，可以直接迭代，在增加和删除属性时性能比较好， 
 map.set(), get, has, delete, clear, keys, values, entries, forEach  
-weakMap: key必须是对象。
+weakMap: key是一个弱引用类型，必须是对象。 
+```javascript
+    let obj = {
+      name: '1231'
+    };
+    let map = new Map()
+    map.set('obj', obj)
+    map.get('obj')  // { name: '123' }
+    
+    obj = null // 标识可以被回收
+    map.get('obj') // { name: '123' } 因为是强引用，obj还在被map一直引用着，所以obj=null时，不会被垃圾回收机制回收掉
+
+```
+```javascript
+    let obj = {
+        name: '1231'
+    };
+    let map = new WeakMap()
+    map.set(obj, 'obj')
+    map.get(obj)  // { name: '123' }
+    
+    obj = null // 标识可以被回收
+    map.get(obj) // undefined 因为是弱引用，所以被引用的对象被赋值为null时，会被垃圾回收机制回收，也是因为这个原因导致在迭代时会获取不到一些key
+```
+   - 弱引用: 不会被垃圾回收机制回收，
+   - 强引用: 会被垃圾回收机制回收，
 
 ### 为什么不能用数组下标作为组件的key
 在对数组组件进行操作时，如果将index作为key, 删除前面的元素，后面的所有元素都会更新一遍，因为key没有变，所有的组件内容都更改了，如果数据量比较大
 则会存在比较大的性能损耗。
+
+### CDN是什么，怎么用，CDN的回源策略是什么
+
+### 小程序端如何进行异常监控？什么是染色测试，如何进行染色测试
+
+### nginx
 
 ### 前端性能优化的点
 1. 首屏加载时间
