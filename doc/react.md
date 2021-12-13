@@ -113,7 +113,7 @@ connect: 将store和view链接，通过mapStateToProps和mapDispatchToProps的�
        + 修改组件实例: 通过ref的形式拿到组件的实例，ref=然后可以修改它
        + 组件劫持
    
-2. 对于新技术的敏感程度，求知欲
+3、对于新技术的敏感程度，求知欲
 
 
 

@@ -1,4 +1,7 @@
-### Typescript
+## Typescript
+[ts高级语法](https://mp.weixin.qq.com/s/KyT3wXXTBVbxaM445ZHaeg)  
+### ts存在的价值和意义
+因为js弱类型语言本身是没有变量类型的约束，无法在编译阶段做到类型检查，提早发现错误。所以就出现了ts,在开发阶段就给出相关的错误信息。
 #### type interface
 type 是interface的别名
 
@@ -15,8 +18,37 @@ type 是interface的别名
         get = 'get'
     }
 ```
-#### 常用api
-1. keyof T 返回该类型上所有公共属性名的联合
+#### 如何绕过额外参数的类型校验
+1. 类型兼容
+   通过赋值操作，不要将参数值直接传递，现将参数值赋值给变量，再将变量传给参数
+```typescript
+    // 1、
+    interface IProps {
+        name: string
+    }
+    const printLabel = (labelObject: IProps) => {
+        console.log(labelObject.name)
+    }
+    const myObj = {
+        name: 'janne',
+        age: 23
+    }
+    printLabel(myObj) // 将要传入的参数先用一个变量接收，再将引用传入到参数中，这样就可以绕过额外参数的校验
+```
+**为什么赋值就使得类型检测变得宽松了**
+> 　　TypeScript 的核心原则之一是对值所具有的结构进行类型检查。 它有时被称做鸭式辨型法或结构性子类型化。  
+
+拿上面的例子来说，赋值操作`const myObj = { name: 'janne', age: 23 }`根据类型推论实际的产生的效果是`const myObj: { name: string, age: number } = { name: 'janne', age: 23}`
+然后将myObj以参数的形式传给
+
+2. 类型断言
+
+3. 索引签名
+
+
+### 常用api
+1. 索引类型查询操作符 `keyof`  
+   `keyof T` 返回T上所有公共属性名的联合
 ```typescript
   const obj = { a: '1',b: 2 };
   type Foo = typeof obj; // { a: string, b: number }
@@ -31,29 +63,125 @@ type 是interface的别名
   }
   interface PenStroke {
     penWidth: number;
-  }
+  } 
   interface Square extends Shape, PenStroke {
     sideLength: number;
   }
 ```
-3. infer 只能出现在extends子语句中，用来推断类型变量
+类型约束 `T extends U`
+>  这里的extends不是类、接口的继承，而是对于类型的判断和约束，意思是判断T能否赋值(判断T的类型是否包含在U中)给U  
 ```typescript
-  // ReturnType 为内置工具类型，作用：由函数类型 T 的返回值类型构造一个类型。
-  // 通过infer U 来标记函数的返回值的类型，如果有返回则返回类型，否则返回any
-  type ReturnType<T> = T extends (...args: any[]) => infer R ? R : any;
+// 判断T是否可以赋值给U,如果可以则返回T否则返回U
+type excludes <T, U> = T extends U ? T : never
 ```
-+ infer 解包,获取数组中元素的类型
+3. 原始类型保护 `typeof`
+    语法： `typeof v === 'typename'` 或 `typeof v !== 'typename'`
+    > 用来判断数据的类型是否是某个原始类型（number、string、boolean、symbol）并进行类型保护
+   
+    > 'typename'必须是number、string、boolean、symbol，但是TS不会阻止你跟其他字符串做比较。
+    
+    > 使用 `typeof` 进行类型判断后，TS会将变量缩减为那个具体的类型(可以直接使用这个类型的api)，只要这个类型和变量的原始类型时兼容的。
+```typescript
+function print(value: number | string) {
+    if (typeof value === 'string') {
+        console.log(value.split('').join(', '))
+    } else {
+        console.log(value.toFixed(2))
+    }
+}
+```
+4. any和unknown的区别
+   unknown 是 top type (任何类型都是它的 subtype) , 而 any 既是 top type, 又是 bottom type (它是任何类型的 subtype ) , 这导致 any 基本上就是放弃了任何类型检查。
+简单说就是any的类型可以赋值给任意类型，任意类型也可以赋值给any,但是任意类型能赋值给unknown但是unknown只能赋值给any
+5. never 表示的是那些永不存在的值的类型  
+   值永不存在的两种情况
+   + 如果一个函数在执行时报错了，函数无法执行到返回值的那一步了，及具有不可到达的终点，永远不会有返回值
+   + 函数中执行无限循环的代码，使得程序无法执行到返回执行的那一步  
+** never与null,undefined一样是任何类型的子类型，也可以赋值给任意类型,但除了never没有类型可以赋值给never,any也不可以。  
+** never与其他类型联合后就没有never了
+6. 类型断言
+   在类型转换时预先知道值的具体类型
+```typescript
+    let someValue: any = "this is a string"
+    // 尖括号得语法
+    // let stringLength: number = (<string>someValue).length
+    // as的语法
+    // let stringLength: number = (someValue as string).length
+```
+8. 类型推论
+  如果没有明确指定类型，那么`ts`会依据类型推论的规则推断出一个类型
+```typescript
+    let a = 'string'
+    a = 7 // Error,a是一个string的类型
+    
+    let b; // 没有初始值时默认类型时any
+    b = 'string'
+    b = 2
+```
+9. 联合类型 `(T | U)`  
+    取值可以时多个类型中的一种，多个类型通过`|`分割
+10. 交叉类型 `(T & U)`  
+    将多个类型合并成一个类型
+11. 类型映射 `(in)`  
+    会遍历指定接口的key或者是遍历联合类型  
+```typescript
+interface Person {
+    name: string
+    age: number
+    gender: number
+}
+// 将 T 的所有属性转换为只读类型
+type ReadOnlyType<T> = {
+    readonly [P in keyof T]: T
+}
+```  
+12. 类型谓词 `is`  
+    parameterName is Type  
+    >  parameterName必须是来自于当前函数签名里的一个参数名，判断parameterName是否是Type类型
+13. 待推断类型 `infer`
+    可以使用 `infer P` 来标记一个泛型，表示这个泛型是一个待推断的类型，并且可以直接使用，只能出现在extends的子语句中。
+```typescript
+type ParamType<T> = T extends (param: infer P) => any ? P : T; // P是param的类型，是未知的但是可以直接使用
 
-in
-&
-|
+type FunctionType = (value: number) => boolean
+
+type Param = ParamType<FunctionType>;   // type Param = number
+
+type OtherParam = ParamType<symbol>;   // type Param = symbol
+```
+14. 枚举类型 `Enum`
+    > 枚举是一个被命名的整型常数的集合，枚举在日常生活中很常见。它是一种数据结构，使用枚举我们可以定义一些带名字的常量，清晰的表达意图或者创建一组有区别的用例。
+    TS支持数字和基于字符串的枚举。
+```typescript
+enum Days { Sun,Mon,Tue,Web,Thu,Fri,Sat };
+// 枚举属性没有赋值，值是从0往上递增,
+```
+
+#### 常见的操作符
+1. `?`
+2. `-？`
+
+#### TS内置的对象
++ `ECMAScript`的内置对象  
+    `String`、`Number`、`Boolean`、`Error`、`Date`、`RegExp`.
++ `BOM`和`DOM`的内置对象  
+    `Document`、`HTMLElement`、`Event`、`NodeList`.
++ 类数组对象 `IArguments`  
+```typescript
+interface IArguments {
+    [index: number]: any,
+    length: number,
+    callee: Function
+}
+
+function fn () {
+    const args: IArguments = arguments;
+}
+```
+
 ?
 -?
 +?
-never
-unkown
-any
-readonly
 void
 
 

@@ -14,7 +14,7 @@ mounted阶段
     
 
 ### useCallback
-缓存函数的引用，不会在状态更新重新渲染的时候重新声明一个新的函数引用
+缓存函数的引用，不会在状态更新重新渲染的时候重新声明一个新的函数引用  
 
 ### useRef
 因为useRef返回缓存下来的值，无论执行多少次都可以拿到最新的值，hook.memoizedState指向了一个对象。
@@ -126,3 +126,7 @@ const useInterval = () => {
 export default useInterval;
 
 ```
+
+### 父组件如何去调用子组件的方法
+1、 通过 `react hooks`的 `useImperativeHandle`这个hook
+2、 
